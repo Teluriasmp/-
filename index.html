@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TSMP</title>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: 'IM Fell English SC', serif;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    #pergunta-container {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    input {
+      padding: 10px;
+      margin: 10px 0;
+      width: 250px;
+      border-radius: 5px;
+      border: none;
+      text-align: center;
+      font-family: 'IM Fell English SC', serif;
+      font-size: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: 'IM Fell English SC', serif;
+      font-size: 20px;
+    }
+
+    #erro {
+      color: red;
+      margin-top: 10px;
+      display: none;
+      font-size: 18px;
+    }
+
+    #resultado {
+      display: none;
+      font-size: 60px;
+      font-weight: bold;
+      position: relative;
+      animation: glitch 1s infinite;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red, -2px 0 blue; }
+      20% { text-shadow: -2px 0 red, 2px 0 blue; }
+      40% { text-shadow: 2px 2px red, -2px -2px blue; }
+      60% { text-shadow: -2px -2px red, 2px 2px blue; }
+      80% { text-shadow: 2px 0 red, -2px 0 blue; }
+      100% { text-shadow: 0 0 red, 0 0 blue; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="pergunta-container">
+    <h2>O que é?</h2>
+    <input type="text" id="resposta" placeholder="Digite sua resposta" />
+    <br />
+    <button onclick="verificarResposta()">Enviar</button>
+    <p id="erro">Resposta incorreta! Tente novamente.</p>
+  </div>
+
+  <div id="resultado">0</div>
+
+  <script>
+    function animarContagem(final) {
+      const resultadoEl = document.getElementById("resultado");
+      let atual = 0;
+      const duracao = 1000;
+      const passos = 60;
+      const incremento = final / passos;
+      let contagem = 0;
+
+      const intervalo = setInterval(() => {
+        atual += incremento;
+        contagem++;
+        resultadoEl.textContent = Math.floor(atual);
+        if (contagem >= passos) {
+          resultadoEl.textContent = final;
+          clearInterval(intervalo);
+        }
+      }, duracao / passos);
+    }
+
+    function normalizarTexto(texto) {
+      return texto
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .toLowerCase();
+    }
+
+    function verificarResposta() {
+      const entrada = document.getElementById("resposta").value;
+      const resposta = normalizarTexto(entrada);
+
+      const respostas = {
+        "corvo mutante": -765,
+        "vento": 29,
+        "possuido": 208
+      };
+
+      const resultadoEl = document.getElementById("resultado");
+
+      if (respostas[resposta] !== undefined) {
+        document.getElementById("pergunta-container").style.display = "none";
+        resultadoEl.style.display = "block";
+        animarContagem(respostas[resposta]);
+      } else {
+        document.getElementById("erro").style.display = "block";
+      }
+    }
+
+    // ⌨️ Habilitar tecla Enter para enviar
+    document.getElementById("resposta").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        verificarResposta();
+      }
+    });
+  </script>
+
+</body>
+</html>
